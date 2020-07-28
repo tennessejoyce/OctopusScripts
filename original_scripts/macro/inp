@@ -1,0 +1,59 @@
+amplitude=0.0435806283195635
+FromScratch = yes
+ParStates = 1
+
+Spacing = 0.3
+BoxShape = cylinder
+XLength = 30 #25
+Radius = 20 #28
+
+AbsorbingBoundaries=sin2
+ABWidth=5
+ABHeight=-0.2
+
+BL=2.074
+
+%Coordinates
+'N' | BL/2 | 0 | 0
+'N' | -BL/2 | 0 | 0
+%
+
+ExcessCharge=1
+SICCorrection=sic_pz
+FilterPotentials=filter_TS
+
+SpinComponents=spin_polarized
+
+omega = 0.072014
+
+%TDExternalFields
+electric_field | 0 | 1 | {0,1} | omega | 'Envelope_trap'
+electric_field | 0 | 1 | {0,-1} | 2*omega | 'Envelope_trap'
+%
+
+ncyc = 10
+cycle = (2*pi)/omega
+t0 = 0.5*ncyc*cycle	#Peak
+tau0 = (ncyc-2)*cycle #Flat time
+tau1 = cycle #Ramp time
+
+%TDFunctions
+   'Envelope_trap' | tdf_trapezoidal | amplitude | tau0 | t0 | tau1
+%
+
+
+
+TDExponentialMethod=chebyshev
+TDPropagator = crank_nicholson
+TDFreezeHXC = yes
+TDTimeStep = 0.1
+TDPropagationTime = 2*t0
+
+
+TDOutput= multipoles + laser
+ExperimentalFeatures = yes
+
+ConvEigenError = yes
+EigensolverTolerance = 1e-10
+ConvRelDens = 1e-10
+MaximumIter = 200

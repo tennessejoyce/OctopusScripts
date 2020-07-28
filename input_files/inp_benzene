@@ -1,0 +1,45 @@
+#CalculationMode = gs
+
+ParStates = 1
+
+FromScratch = no
+
+ConvRelDens=1e-8
+ConvEigenError=yes
+MaximumIter = 100
+
+Radius = 25
+Spacing = 0.4
+
+Output = current + density + wfs
+OutputFormat = dx
+OutputInterval = 50
+OutputWfsNumber = "14-15"
+
+TDOutput = laser + multipoles
+
+XYZCoordinates = "benzene.xyz"
+
+SICCorrection = sic_pz
+ExperimentalFeatures = yes
+
+AbsorbingBoundaries = sin2
+ABWidth = 10
+ABCapHeight = -0.2
+
+omega = 0.2485853045
+ncyc = 8
+eAmp = sin((8/8)*pi/2) #With eAmp=1 corresponding to 10^13 W/cm^2 (circular polarization)
+
+TDPropagator = crank_nicolson
+TDPropagationTime = 2*(ncyc)*2*pi/omega
+TDTimeStep = 0.1
+
+%TDExternalFields
+  electric_field | 1 | {0,1} | 0 | omega | "Sin2E"
+%
+
+%TDFunctions
+   "Sin2E" | tdf_from_expr | "eAmp*sqrt(1e-3/3.51)*sin(min(t*omega/(2*ncyc),pi))^2"
+%
+
